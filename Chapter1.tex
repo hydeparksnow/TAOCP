@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+
+\usepackage{sectsty}
+\usepackage{graphicx}
+\usepackage{amssymb}
+% Margins
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\title{Notes on The Art of Computer Programming}
+\author{ Ying Zhao }
+\date{\today}
+
+\begin{document}
+\maketitle	
+\pagebreak
+
+% Optional TOC
+% \tableofcontents
+% \pagebreak
+
+%--Paper--
+
+\section{BASIC CONCEPTS}
+\subsection{ALGORITHMS}
+\textbf{\textit{Euclid's algorithm}}\\
+Given two positive integers \textit{m} and \textit{n}, find their greatest common divisor.\\
+\textbf{E1.} Divide \textit{m} by \textit{n} and let \textit{r} be the remainder.\\
+\textbf{E2.} If \textit{r} = 0, return \textit{n} as the answer.\\
+\textbf{E3.} Set $\textit{m} \leftarrow \textit{n}$, $\textit{n} \leftarrow \textit{r}$,  and go back to step E1.\\
+\\
+Why this guarantees we can find the answer?\\
+Part 1: to prove the returned answer is the greatest common divisor.\\
+If $\textit{m} < \textit{n}$, after E1, \textit{r} becomes \textit{m}, since it is positive, go to E3, values of \textit{m} and \textit{n} will then be swapped. So we only need to consider $\textit{m} >= \textit{n}$.\\
+After E1, if $\textit{r} = 0$, \textit{n} becomes the greatest common divisor. E2 terminates the algorithm and the result is correct. Otherwise, we have $\textit{m} = q*n + r$ (1) with $0<r<n$. To prove the greatest common divisor of \textit{m} and \textit{n} is also the greatest common divisor of \textit{n} and \textit{r}:\\
+Let $A$ be the set of common divisors of \textit{m} and \textit{n}, and $B$ be the the set of common divisors of \textit{n} and \textit{r}.\\
+$\forall a \in A$, by definition, $m\%a = 0$, $n\%a = 0$, according to (1), $r\%a = 0$, thus $a \in B$.\\
+$\forall b \in B$, by definition, $n\%b = 0$, $r\%b = 0$, according to (1), $m\%b = 0$, thus $b \in A$.\\
+This means $A = B$, they also have the same greatest value.\\
+Part 2: to prove this algorithm is guaranteed to end in finite steps:\\
+If $\textit{m} < \textit{n}$, after E1, their values are swapped, \textit{n} becomes the smaller value. If the algorithm does not stop at E2, each time after E1, we will get a smaller \textit{r}, because it is strictly smaller than \textit{n}. A strictly decreasing non-negative sequence is guaranteed to stop at 0.\blacksquare
+\pagebreak
+\section{Section 2}
+
+%--/Paper--
+
+\end{document}
