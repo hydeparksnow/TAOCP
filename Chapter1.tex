@@ -44,7 +44,74 @@ This means $A = B$, they also have the same greatest value.\\
 Part 2: to prove this algorithm is guaranteed to end in finite steps:\\
 If $\textit{m} < \textit{n}$, after E1, their values are swapped, \textit{n} becomes the smaller value. If the algorithm does not stop at E2, each time after E1, we will get a smaller \textit{r}, because it is strictly smaller than \textit{n}. A strictly decreasing non-negative sequence is guaranteed to stop at 0.\blacksquare
 \pagebreak
-\section{Section 2}
+\textbf{\textit{Computational Method, Computation Sequence and Algorithm}}\\
+A computational method is a quadruple $(Q, I, \Omega, f)$, in which the four quantities represent respectively the states of computation, the input, the output, and the computational rule. More specifically,\\
+(1) $I \subset Q, \Omega \subset Q$ \\
+(2) $f: Q \rightarrow Q$\\
+(3) $\forall q \in \Omega, f(q) = q$\\
+\newline
+\textit{Computation sequence}: for each input $x$ in $I$, let $x_0 = x$ and $x_{k+1} = f(x_k)$ for $k \geqslant 0$, then $x_0, x_1, x_2, ...$ defines a computation sequence.
+The computation sequence is said to terminate in $k$ steps if $k$ is the smallest integer for which $x_k$ is in $\Omega$.\\
+\newline
+An algorithm is a computational method that terminates in finite steps for all $x$ in I.\\
+
+\textbf{\textit{Implementation of Algorithm}}\\
+Suppose that $C_1 = (Q_1, I_1, \Omega_1, f_1)$ and $C_2 = (Q_2, I_2, \Omega_2, f_2)$ are computational methods, we say that $C_2$ represents $C_1$ if there is a function $g: I_1\rightarrow I_2$, a function $h: Q_2 \rightarrow Q_1$ and a function j from $Q_2$ into positive integers satisfying the following conditions:\\
+(1) $\forall x \in I_1, h(g(x)) = x$.\\
+(2) $\forall q \in Q_2, f_1(h(q)) = h(f_2^{[j(q)]}(q))$, where $f_2^{[j(q)]}(q)$ means that the function $f_2$ is to be iterated $j(q)$ times.\\
+(3) $\forall q \in \Omega_2, h(q) \in \Omega_1$.\\
+(4) If $q \in Q_2$ and $h(q) \in \Omega_1$, then $q \in \Omega_2$.\\
+
+To have a more intuitive understanding about (2), essentially we want an equivalent mapping of $f_1$, or simulate the computation sequence $x_0, x_1, x_2, ...$ in $C_1$. Or to be more accurate, we need to find $x_k$ for each $x$ using $C_2$.
+In Figure \ref{fig:1.1a}, the blue path and the yellow path is equivalent based on (2). Apply this to the computation sequence, start from $x_0$, we can find a corresponding state in $I_2$ using $g$, for $x_1$, we can also find at least one state in $Q_2$ that can map back to it using $h$, same for $x_2, x_3, ..., x_k$. Note $x_1$ could have several states in $Q_2$ that map to it, so there does not need to be a mapping from $Q_1$ to $Q_2$. That being said, using (2) makes more sense compared with using an equivalent mapping of $f_1$.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.25]{TAOCP/1.1a.jpeg}
+    \caption{$C_2$ is an implementation of $C_1$}
+    \label{fig:1.1a}
+\end{figure}
+\newpage
+\textbf{\textit{Implementation Relation is Transitive}}\\
+If $C_2$ represents $C_1$ by means of functions $g, h, j$, and if $C_3$ represents $C_2$ by means of functions $g', h', j'$, then $C_3$ represents $C_1$ by means of function $g'', h'', j''$, where
+\begin{center}
+$g''(x) &= g'(g(x)), h''(x) &= h(h'(x)),$\\
+$j''(q) = \sum_{0\leq k < j(h'(q))} j'(q_k)$ where $q_0=q, q_{k+1} = f_3^{[j'(q_k)]}(q_k).$
+\end{center}
+
+Proof:\\
+According to the definition of algorithm implementation, in order to prove $C_3$ represents $C_1$ we need to find functions $g'': I_1\rightarrow I_3$, a function $h'': Q_3 \rightarrow Q_1$ and a function $j''$ from $Q_3$ into positive integers satisfying the previously mentioned four conditions:\\
+(1) $\forall x \in I_1, h''(g''(x)) = x$.\\
+(2) $\forall q \in Q_3, f_1(h''(q)) = h''(f_3^{[j''(q)]}(q))$, where $f_2^{[j''(q)]}(q)$ means that the function $f_2$ is to be iterated $j''(q)$ times.\\
+(3) $\forall q \in \Omega_3, h''(q) \in \Omega_1$.\\
+(4) If $q \in Q_3$ and $h''(q) \in \Omega_1$, then $q \in \Omega_3$.\\
+For (1), we already have $\forall x_1 \in I_1, h(g(x_1)) = x_1$ from $C_2$ represents $C_1$, and let $x_2$ be $g(x_1)$, from $C_3$ represents $C_2$, then $x_2 \in I_2$, $ h'(g'(x_2)) = x_2$, we have
+\begin{center}
+    $h'(g'(x_2)) = h'(g'(g(x_1))) = g(x_1)$\\
+    $h(h'(g'(g(x_1)))) = h(g(x_1)) = x_1$
+\end{center}
+Let $h''(x)$ be $h(h'(x))$, and $g''(x)$ be $g'(g(x))$, also we have $h'': I_3\rightarrow I_1$, $g'' : I_1\rightarrow I_3$, condition (1) is then satisfied.\\
+For (2), $\forall q \in Q_3$, $f_1(h''(q)) = f_1(h(h'(q))) = h(f_2^{[j(h'(q))]}(h'(q)))$,
+\begin{equation}
+\begin{split}
+    f_2^{[j(h'(q))]}(h'(q)) &= f_2^{[j(h'(q))]-1}(h'(f_3^{[j'(q)]}(q)))\\
+    &= f_2^{[j(h'(q))]-1}(h'(q_1)), \text{where } q_1=f_3^{[j'(q)]}(q)\\
+    &= f_2^{[j(h'(q))]-2}(h'(f_3^{[j'(q_1)]}(q_1)))\\
+    &= f_2^{[j(h'(q))]-2}(h'(q_2)), \text{where } q_2=f_3^{[j'(q_1)]}(q_1)=f_3^{[j'(q_1)]}(f_3^{[j'(q)]}(q))=f_3^{[j'(q)+j'(q_1)]}(q)\\
+    &...\\
+    &= f_2^{[j(h'(q))-i]}(h'(q_i)), \text{where }q_i=f_3^{[j'(q_{i-1})]}(q_{i-1})=f_3^{[\sum_{0\leq k < i}j'(q_k)]}(q)\\
+    &= h'(q_m), \text{where }m=j(h'(q)), q_m=f_3^{[\sum_{0\leq k < m}j'(q_k)]}(q)\\
+    &= h'(f_3^{[\sum_{0\leq k < j(h'(q))}j'(q_k)]}(q))\\
+    &= h'(f_3^{[j''(q)]}(q)), \text{where } j''(q)=\sum_{0\leq k < j(h'(q))}j'(q_k), q_0=q, q_{k+1}=f_3^{[j'(q_k)]}(q_k)\\
+\end{split}
+\end{equation}
+Then
+\begin{equation}
+    f_1(h''(q)) = h(h'(f_3^{[j''(q)]}(q))) = h''(f_3^{[j''(q)]}(q))
+\end{equation}
+Condition (2) is thus satisfied.\\
+For (3), $\forall q \in \Omega_3, h''(q) = h(h'(q))$, since $h'(q) \in \Omega_2$, we have $h(h'(q)) \in \Omega_3$.\\
+For (4), if $q\in Q_3$ and $h''(q) = h(h'(q)) \in \Omega_1$, we know $h'(q) \in \Omega_2$, then $q \in \Omega_3$.$\blacksquare$
+\newpage
 
 %--/Paper--
 
